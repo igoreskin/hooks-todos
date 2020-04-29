@@ -8,7 +8,9 @@ const TodoForm = () => {
 
   useEffect(() => {
     if (currentTodo.text) {
-      setTodo(currentTodo.text)
+      setTodo(currentTodo.text);
+    } else {
+      setTodo(""); // in case if the todo just has been deleted
     }
   }, [currentTodo.id])
 

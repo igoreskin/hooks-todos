@@ -3,6 +3,12 @@ import uuidv4 from 'uuid/v4';
 export default function reducer(state, action) {
   switch (action.type) {
     case "ADD_TODO":
+      if (!action.payload) { //to prevent from adding empty todos
+        return state;
+      }
+      if (state.todos.findIndex(t => t.text === action.payload) > -1) { //this is to prevent from creating todos with identical text
+        return state;
+      }
       const newTodo = { id: uuidv4(), text: action.payload, complete: false };
       const addedTodos = [ ...state.todos, newTodo ];
       return { ...state, todos: addedTodos };
@@ -15,6 +21,12 @@ export default function reducer(state, action) {
       return { ...state, todos: toggledTodos };
 
     case "UPDATE_TODO": {
+      if (!action.payload) { //to prevent from adding empty todos
+        return state;
+      }
+      if (state.todos.findIndex(t => t.text === action.payload) > -1) { //this is to prevent from creating todos with identical text
+        return state;
+      }
       const updatedTodo = { ...state.currentTodo, text: action.payload };
       const updatedTodoIndex = state.todos.findIndex(t => t.id === state.currentTodo.id);
       const updatedTodos = [ ...state.todos.slice(0, updatedTodoIndex), updatedTodo, ...state.todos.slice(updatedTodoIndex + 1)]
@@ -23,7 +35,8 @@ export default function reducer(state, action) {
 
     case "REMOVE_TODO":
       const filteredTodos = state.todos.filter(t => t.id !== action.payload.id);
-      return { ...state, todos: filteredTodos };
+      const isRemovedTodo = state.currentTodo.id === action.payload.id ? {} : state.currentTodo; // to clear the input field if the edit button has been clicked
+      return { ...state, currentTodo: isRemovedTodo, todos: filteredTodos };
 
     default: 
       return state;
