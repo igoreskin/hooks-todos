@@ -1,4 +1,5 @@
 import React, { useContext } from 'react';
+import axios from 'axios';
 import TodosContext from '../context';
 
 const TodoList = () => {
@@ -9,6 +10,7 @@ const TodoList = () => {
   return (
     <div className="container mx-auto max-w-lg text-center font-mono">
       <h1 style={{ fontSize: "200%", fontWeight: "600"}}>{title}</h1>
+
       <ul className="text-white p-0">
         {state.todos.map(todo => (
           <li key={todo.id} className="flex items-center bg-orange-400 border-black border-dashed border-2 my-2 py-4">
@@ -18,10 +20,16 @@ const TodoList = () => {
             >
               {todo.text}
             </span>
+
             <button onClick={() => dispatch({ type: "SET_CURRENT_TODO", payload: todo })}>
               <img src="https://icon.now.sh/edit/0050c5" alt="Edit Icon" className="h-6" />
             </button>
-            <button onClick={() => dispatch({ type: "REMOVE_TODO", payload: todo })}>
+            
+            <button onClick={async () => {
+                await axios.delete(`https://hooks-api.igoreskin.now.sh/todos/${todo.id}`);
+                dispatch({ type: "REMOVE_TODO", payload: todo })}
+              }
+            >
               <img src="https://icon.now.sh/delete/8b0000" alt="Delete Icon" className="h-6" />
             </button>
           </li>
