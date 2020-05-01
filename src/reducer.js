@@ -24,13 +24,13 @@ export default function reducer(state, action) {
       return { ...state, todos: toggledTodos };
 
     case "UPDATE_TODO": {
-      if (!action.payload) { //to prevent from adding empty todos
-        return state;
-      }
-      if (state.todos.findIndex(t => t.text === action.payload) > -1) { //this is to prevent from creating todos with identical text
-        return state;
-      }
-      const updatedTodo = { ...state.currentTodo, text: action.payload };
+      // if (!action.payload) { //to prevent from adding empty todos
+      //   return state;
+      // }
+      // if (state.todos.findIndex(t => t.text === action.payload) > -1) { //this is to prevent from creating todos with identical text
+      //   return state;
+      // }
+      const updatedTodo = { ...action.payload };
       const updatedTodoIndex = state.todos.findIndex(t => t.id === state.currentTodo.id);
       const updatedTodos = [ ...state.todos.slice(0, updatedTodoIndex), updatedTodo, ...state.todos.slice(updatedTodoIndex + 1)]
       return { ...state, currentTodo: {}, todos: updatedTodos }; // this also clears currentTodo from the state 
