@@ -6,24 +6,24 @@ import TodosContext from '../context';
 const TodoForm = () => {
 
   const [todo, setTodo] = useState("");
-  const { state: { currentTodo = {} }, dispatch } = useContext(TodosContext); // destructured from value = {{ state, dispatch }} of TodosContext.Provider
+  const { state, dispatch } = useContext(TodosContext); // destructured from value = {{ state, dispatch }} of TodosContext.Provider
 
   useEffect(() => {
-    if (currentTodo.text) {
-      setTodo(currentTodo.text);
+    if (state.currentTodo.text) {
+      setTodo(state.currentTodo.text);
     } else {
-      setTodo(""); // in case if the todo just has been deleted
+      setTodo(""); // to clear the input field in case if the todo has just been deleted
     }
-  }, [currentTodo.id])
+  }, [state.currentTodo.id])
 
   const handleSubmit = async event => {
     event.preventDefault();
-    if (currentTodo.text) {
-      const response = await axios.patch(`https://hooks-api.igoreskin.now.sh/todos/${currentTodo.id}`, {
+    if (state.currentTodo.text && !!todo && state.todos.findIndex(t => t.text === todo) < 0) {
+      const response = await axios.patch(`https://hooks-api.igoreskin.now.sh/todos/${state.currentTodo.id}`, {
         text: todo
       })
       dispatch({ type: "UPDATE_TODO", payload: response.data});
-    } else {
+    } else if (!!todo && state.todos.findIndex(t => t.text === todo) < 0) {
       const response = await axios.post("https://hooks-api.igoreskin.now.sh/todos", {
         id: uuidv4(),
         text: todo,
